@@ -14,7 +14,7 @@ jobs:
       id: read-file
       run: |
         FILE_CONTENT=$(cat qa.txt)
-        echo "::set-output name=content::$FILE_CONTENT"
+        echo "$FILE_CONTENT"
     - name: 
       run: |
         echo Add other actions to build,
