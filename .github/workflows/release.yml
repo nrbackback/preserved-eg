@@ -15,8 +15,9 @@ jobs:
       run: |
         FILE_CONTENT=$(cat qa.txt)
         echo "$FILE_CONTENT"
+        echo "::set-output name=build-qa::success"
     - name: release_qa
-      # if: steps.read-qa-file.outputs.content == "true"
+      if: ${{ steps.read-qa-file.outputs.build-qa == 'true' }}
       run: |
         echo Add other actions to build,
         echo test, and deploy your project. 
@@ -24,3 +25,42 @@ jobs:
         pwd
         go build
         go run .
+
+
+-----------------------
+name: Conditional Steps Workflow
+
+on: [push]
+
+jobs:
+ conditional-steps:
+   runs-on: ubuntu-latest
+
+   steps:
+     - name: Checkout repository
+       uses: actions/checkout@v2
+
+     - name: Read file content
+       id: read-file
+       run: |
+         FILE_CONTENT=$(cat path/to/your/file.txt)
+         echo "::set-output name=content::$FILE_CONTENT"
+
+     - name: Execute step if file content matches
+       if: steps.read-file.outputs.content == 'desired_value'
+       run: echo "File content matches desired value. This step is executed."
+
+     - name: Execute another step if file content matches
+       if: steps.read-file.outputs.content == 'desired_value'
+       run: echo "Another step executed because file content matches desired value."
+
+     - name: Execute step if file content does not match
+       if: steps.read-file.outputs.content != 'desired_value'
+       run: echo "File content does not match desired value. This step is executed."
+在这个示例中：
+
+on: [push] 表示在每次推送代码到仓库时触发此工作流。
+Checkout repository 步骤使用 actions/checkout@v2 操作将仓库代码检出。
+Read file content 步骤读取指定文件的内容，并将其设置为输出变量 content。这里使用了 id: read-file，方便后续步骤引用其输出。
+Execute step if file content matches 和 Execute another step if file content matches 步骤使用 if 条件语句检查文件内容是否等于 desired_value，如果条件满足，则执行相应的命令。
+Execute step if file content does not match 步骤使用 if 条件语句检查文件内容是否不等于 desired_value，如果条件满足，则执行相应的命令。
