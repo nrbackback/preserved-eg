@@ -16,10 +16,11 @@ jobs:
         FILE_CONTENT=$(cat qa.txt)
         echo "$FILE_CONTENT"
     - name: release_qa
-      if: steps.read-qa-file.outputs.content == 'true'
+      # if: steps.read-qa-file.outputs.content == "true"
       run: |
         echo Add other actions to build,
         echo test, and deploy your project. 
+        echo steps.read-qa-file.outputs.content
         pwd
         go build
         go run .
