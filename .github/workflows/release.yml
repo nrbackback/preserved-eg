@@ -1,21 +1,24 @@
+name: Build Workflow
+
 on:
   push:
     branches:
       - main
 jobs:
-  build:
-    runs-on: ubuntu-latest # 该job在什么环境下运行
-    steps:
-      - uses: actions/checkout@v1
-     - name: Check QA Release
-       id: read-file
-       run: |
-         FILE_CONTENT=$(cat qa.txt)
-         echo "::set-output name=content::$FILE_CONTENT"
-      - name: 
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project. 
-          pwd
-          go build
-          go run .
+  check-file-content:
+   runs-on: ubuntu-latest
+   steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Read file content
+      id: read-file
+      run: |
+        FILE_CONTENT=$(cat qa.txt)
+        echo "::set-output name=content::$FILE_CONTENT"
+    - name: 
+      run: |
+        echo Add other actions to build,
+        echo test, and deploy your project. 
+        pwd
+        go build
+        go run .
