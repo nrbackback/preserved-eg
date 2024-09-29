@@ -20,7 +20,7 @@ func headers(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-    // ...vvv
+    // ...vvvc
     http.HandleFunc("/hello", hello)
     http.HandleFunc("/headers", headers)
     fmt.Println("........ready to serve...............")
