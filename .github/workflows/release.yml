@@ -5,17 +5,18 @@ on:
     branches:
       - main
 jobs:
-  check-file-content:
+  build:
    runs-on: ubuntu-latest
    steps:
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Read file content
-      id: read-file
+      id: read-qa-file
       run: |
         FILE_CONTENT=$(cat qa.txt)
         echo "$FILE_CONTENT"
-    - name: 
+    - name: release_qa
+      if: steps.read-qa-file.outputs.content == 'true'
       run: |
         echo Add other actions to build,
         echo test, and deploy your project. 
