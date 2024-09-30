@@ -15,7 +15,11 @@ jobs:
       run: |
         FILE_CONTENT=$(cat qa.txt)
         echo "$FILE_CONTENT"
-        echo "::set-output name=build-qa::success"
+        if [ "$FILE_CONTENT" == "true" ]; then
+          echo "::set-output name=build-qa::true"
+        else
+          echo "::set-output name=build-qa::false"
+        fi
     - name: release_qa
       if: ${{ steps.read-qa-file.outputs.build-qa == 'true' }}
       run: |
