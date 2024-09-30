@@ -1,5 +1,4 @@
 name: Build Workflow
-
 on:
   push:
     branches:
