@@ -20,7 +20,7 @@ jobs:
            echo "build-qa=false" >> $GITHUB_ENV
         fi
     - name: release_qa
-      if: ${{ steps.read-qa-file.outputs.build-qa == 'true' }}
+       if: ${{ env.build-qa == 'true' }}
       run: |
         echo Add other actions to build,
         echo test, and deploy your project. 
@@ -28,3 +28,7 @@ jobs:
         pwd
         go build
         go run .
+    - name: release_qa
+       if: ${{ env.build-qa == 'false' }}
+      run: |
+        echo false..................
