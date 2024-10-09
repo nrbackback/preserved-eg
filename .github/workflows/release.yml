@@ -23,7 +23,7 @@ jobs:
       if: ${{ env.build-qa == 'true' }}
       run: |
         echo Add other actions to build,
-        echo test, and deploy your project. 
+        echo test, and deploy your project. 1
         echo steps.read-qa-file.outputs.content
         pwd
         go build
