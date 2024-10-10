@@ -1,6 +1,8 @@
 name: Build Workflow
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push] 
+env:
+  DAY_OF_WEEK: Monday
 jobs:
   ReadConfig:
     runs-on: self-hosted
@@ -9,6 +11,8 @@ jobs:
       environment: ${{ steps.read-environment.outputs.value }}
       branch: ${{ steps.read-branch.outputs.value }}
     steps:
+      - name: "Say Hello Mona it's Monday"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
       - id: read-environment
         # run: echo "value=qa" >> $GITHUB_OUTPUT  # TODO: 这个可以在ubuntu-lastest上顺利运行
         run: |
@@ -22,7 +26,9 @@ jobs:
     needs: ReadConfig
     steps:
       - run: echo ${{needs.ReadConfig.outputs.environment}} 
-      - run: echo ${{needs.ReadConfig.outputs.branch}}
+      - run: echo ${{needs.ReadConfig.outputs.branch}}:
+      - name: "Say Hello Mona it's Monday......"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
   job3:
     runs-on: self-hosted
     needs: ReadConfig
