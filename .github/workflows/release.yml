@@ -10,9 +10,11 @@ jobs:
       branch: ${{ steps.read-branch.outputs.value }}
     steps:
       - id: read-environment
-        run: echo "::set-output name=value::qa" # TODO:
+        # run: echo "::set-output name=value::qa" # TODO:
+        run: echo "value=qa" >> $GITHUB_OUTPUT
       - id: read-branch
-        run: echo "::set-output name=value::dev-ni"  # TODO:
+        # run: echo "::set-output name=value::dev-ni"  # TODO:
+        run: echo "value=dev-ni" >> $GITHUB_OUTPUT
   job2:
     runs-on: ubuntu-latest
     needs: ReadConfig
