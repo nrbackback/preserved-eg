@@ -1,34 +1,29 @@
-name: Build Workflow
+name: PR Comment Trigger
+
 on:
-  push:
-    branches:
-      - main
+ issue_comment:
+   types: [created]
+
 jobs:
-  build:
-   runs-on: ubuntu-latest
+ comment-check:
+   runs-on: self-hosted
+
    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Read file content
-      id: read-qa-file
-      run: |
-        FILE_CONTENT=$(cat qa.txt)
-        echo "$FILE_CONTENT"
-         if [ "$FILE_CONTENT" == "true" ]; then
-           echo "build-qa=true" >> $GITHUB_ENV
-         else
-           echo "build-qa=false" >> $GITHUB_ENV
-        fi
-    - name: release_qa
-      if: ${{ env.build-qa == 'true' }}
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project. 1
-        echo steps.read-qa-file.outputs.content
-        pwd
-        go build
-        go run .
-    - name: release_qa
-      if: ${{ env.build-qa == 'false' }}
-      run: |
-        echo false..................
+   - name: Check out the repository
+     uses: actions/checkout@v4 #?
+
+   - name: Set up Node.js
+     uses: actions/setup-node@v2
+     with:
+       node-version: '14'
+
+   - name: Read PR comment
+     id: read-comment
+     run: |
+       COMMENT_BODY=$(jq -r .comment.body "$GITHUB_EVENT_PATH")
+       echo "Comment: $COMMENT_BODY"
+       echo "::set-output name=comment::$COMMENT_BODY"
+
+   - name: Trigger action based on comment
+     if: contains(steps.read-comment.outputs.comment, 'run-action')
+     run: echo "Triggering action because comment contains 'run-action'"
