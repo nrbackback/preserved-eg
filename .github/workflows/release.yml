@@ -10,9 +10,13 @@ jobs:
       branch: ${{ steps.read-branch.outputs.value }}
     steps:
       - id: read-environment
-        run: echo "value=qa" >> $GITHUB_OUTPUT  # TODO:
+        # run: echo "value=qa" >> $GITHUB_OUTPUT  # TODO:
+        run: |
+          Write-Output "::set-output name=value::qa"
       - id: read-branch
-        run: echo "value=dev-ni" >> $GITHUB_OUTPUT # TODO:
+        # run: echo "value=dev-ni" >> $GITHUB_OUTPUT # TODO:
+        run: |
+          Write-Output "::set-output name=value::dev-ni"
   job2:
     runs-on: self-hosted
     needs: ReadConfig
