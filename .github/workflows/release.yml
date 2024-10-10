@@ -1,31 +1,16 @@
-name: PR Comment Trigger
+name: PR Merged Trigger
 
 on:
- issue_comment:
-   types: [created]
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'main'
 
 jobs:
- comment-check:
-   runs-on: self-hosted
-
-   steps:
-   - name: Read Secret
-     run: echo ${{ secrets.QA_IP }}
-   - name: Check out the repository
-     uses: actions/checkout@v4 #?
-
-   - name: Set up Node.js
-     uses: actions/setup-node@v2
-     with:
-       node-version: '14'
-
-   - name: Read PR comment
-     id: read-comment
-     run: |
-       COMMENT_BODY=$(jq -r .comment.body "$GITHUB_EVENT_PATH")
-       echo "Comment: $COMMENT_BODY"
-       echo "::set-output name=comment::$COMMENT_BODY"
-
-   - name: Trigger action based on comment
-     if: contains(steps.read-comment.outputs.comment, 'run-action')
-     run: echo "Triggering action because comment contains 'run-action'"
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo The PR was merged
