@@ -1,53 +1,29 @@
-name: Build Workflow
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push] 
-env:
-  DAY_OF_WEEK: Monday
+name: PR Comment Trigger
+
+on:
+ issue_comment:
+   types: [created]
+
 jobs:
-  ReadConfig:
-    runs-on: self-hosted
-    # Map a step output to a job output
-    outputs:
-      environment: ${{ steps.read-environment.outputs.value }}
-      branch: ${{ steps.read-branch.outputs.value }}
-    steps:
-      - name: "Say Hello Mona it's Monday"
-        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
-      - id: read-environment
-        # run: echo "value=qa" >> $GITHUB_OUTPUT  # TODO: 这个可以在ubuntu-lastest上顺利运行
-        run: |
-          Write-Output "::set-output name=value::qa" # 只有在Windows的Powershell才这么写
-      - id: read-branch
-        # run: echo "value=dev-ni" >> $GITHUB_OUTPUT # TODO:
-        run: |
-          Write-Output "::set-output name=value::dev-ni" # 只有在Windows的Powershell才这么写
-  job2:
-    runs-on: self-hosted
-    needs: ReadConfig
-    steps:
-      - run: echo ${{needs.ReadConfig.outputs.environment}} 
-      - run: echo ${{needs.ReadConfig.outputs.branch}}
-      - name: "Say Hello Mona it's Monday......"
-        run: echo "$Greeting $First_Name. Today is '${{ env.DAY_OF_WEEK }}'!"
-  job3:
-    runs-on: self-hosted
-    needs: ReadConfig
-    if: ${{ needs.ReadConfig.outputs.environment == 'qa' }}
-    steps:
-      - run: echo ${{needs.ReadConfig.outputs.environment}} 
-      - run: echo ${{needs.ReadConfig.outputs.branch}}
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{needs.ReadConfig.outputs.branch}}
-          # ref: dev-ni
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: ls
-        run: ls "${{ github.workspace }}"
-  job4:
-    runs-on: self-hosted
-    needs: ReadConfig
-    if: ${{ needs.ReadConfig.outputs.environment == 'prod' }}
-    steps:
-      - run: echo ${{needs.ReadConfig.outputs.environment}} 
-      - run: echo ${{needs.ReadConfig.outputs.branch}}
+ comment-check:
+   runs-on: self-hosted
+
+   steps:
+   - name: Check out the repository
+     uses: actions/checkout@v4
+
+   - name: Set up Node.js
+     uses: actions/setup-node@v2
+     with:
+       node-version: '14'
+
+   - name: Read PR comment
+     id: read-comment
+     run: |
+       COMMENT_BODY=$(jq -r .comment.body "$GITHUB_EVENT_PATH")
+       echo "Comment: $COMMENT_BODY"
+       echo "::set-output name=comment::$COMMENT_BODY"
+
+   - name: Trigger action based on comment
+     if: contains(steps.read-comment.outputs.comment, 'run-action')
+     run: echo "Triggering action because comment contains 'run-action'"
