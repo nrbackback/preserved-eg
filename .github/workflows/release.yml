@@ -29,7 +29,7 @@ jobs:
       - run: echo ${{needs.ReadConfig.outputs.environment}} 
       - run: echo ${{needs.ReadConfig.outputs.branch}}
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{needs.ReadConfig.outputs.branch}}
           # ref: dev-ni
