@@ -10,7 +10,7 @@ jobs:
 
    steps:
    - name: Read Secret
-     if: echo ${{ secrets.QA_IP }}
+     run: echo ${{ secrets.QA_IP }}
    - name: Check out the repository
      uses: actions/checkout@v4 #?
 
