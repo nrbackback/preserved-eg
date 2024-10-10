@@ -10,13 +10,13 @@ jobs:
       branch: ${{ steps.read-branch.outputs.value }}
     steps:
       - id: read-environment
-        # run: echo "value=qa" >> $GITHUB_OUTPUT  # TODO:
+        # run: echo "value=qa" >> $GITHUB_OUTPUT  # TODO: 这个可以在ubuntu-lastest上顺利运行
         run: |
-          Write-Output "::set-output name=value::qa"
+          Write-Output "::set-output name=value::qa" # 只有在Windows的Powershell才这么写
       - id: read-branch
         # run: echo "value=dev-ni" >> $GITHUB_OUTPUT # TODO:
         run: |
-          Write-Output "::set-output name=value::dev-ni"
+          Write-Output "::set-output name=value::dev-ni" # 只有在Windows的Powershell才这么写
   job2:
     runs-on: self-hosted
     needs: ReadConfig
@@ -37,7 +37,7 @@ jobs:
           # ref: dev-ni
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: ls
-        run: ls ${{ github.workspace }}
+        run: ls "${{ github.workspace }}"
   job4:
     runs-on: self-hosted
     needs: ReadConfig
