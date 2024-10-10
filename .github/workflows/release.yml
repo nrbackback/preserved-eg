@@ -1,34 +1,43 @@
 name: Build Workflow
-on:
-  push:
-    branches:
-      - main
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push] 
 jobs:
-  build:
-   runs-on: ubuntu-latest
-   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Read file content
-      id: read-qa-file
-      run: |
-        FILE_CONTENT=$(cat qa.txt)
-        echo "$FILE_CONTENT"
-         if [ "$FILE_CONTENT" == "true" ]; then
-           echo "build-qa=true" >> $GITHUB_ENV
-         else
-           echo "build-qa=false" >> $GITHUB_ENV
-        fi
-    - name: release_qa
-      if: ${{ env.build-qa == 'true' }}
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project. 1
-        echo steps.read-qa-file.outputs.content
-        pwd
-        go build
-        go run .
-    - name: release_qa
-      if: ${{ env.build-qa == 'false' }}
-      run: |
-        echo false..................
+  ReadConfig:
+    runs-on: self-hosted
+    # Map a step output to a job output
+    outputs:
+      environment: ${{ steps.read-environment.outputs.value }}
+      branch: ${{ steps.read-branch.outputs.value }}
+    steps:
+      - id: read-environment
+        run: echo "value=qa" >> $GITHUB_OUTPUT  # TODO:
+      - id: read-branch
+        run: echo "value=dev-ni" >> $GITHUB_OUTPUT # TODO:
+  job2:
+    runs-on: self-hosted
+    needs: ReadConfig
+    steps:
+      - run: echo ${{needs.ReadConfig.outputs.environment}} 
+      - run: echo ${{needs.ReadConfig.outputs.branch}}
+  job3:
+    runs-on: self-hosted
+    needs: ReadConfig
+    if: ${{ needs.ReadConfig.outputs.environment == 'qa' }}
+    steps:
+      - run: echo ${{needs.ReadConfig.outputs.environment}} 
+      - run: echo ${{needs.ReadConfig.outputs.branch}}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{needs.ReadConfig.outputs.branch}}
+          # ref: dev-ni
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: ls
+        run: ls ${{ github.workspace }}
+  job4:
+    runs-on: self-hosted
+    needs: ReadConfig
+    if: ${{ needs.ReadConfig.outputs.environment == 'prod' }}
+    steps:
+      - run: echo ${{needs.ReadConfig.outputs.environment}} 
+      - run: echo ${{needs.ReadConfig.outputs.branch}}
