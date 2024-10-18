@@ -1,4 +1,4 @@
-name: Test
+name: Publish a release
 
 on:
   # release:
@@ -6,23 +6,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  Checkout:
-    runs-on: self-hosted
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-  Build:
-    needs: Checkout
-    runs-on: self-hosted
+    - run: |
+        echo  waiting
+    
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: cdddd
     steps:
-      - name: Get build info
-        run: |
-          # 获取最新提交信息
-          $BRANCH = git branch --show-current
-          Write-Output "Using branch: $BRANCH"
-          $COMMIT_ID = git log -1 --format="%H"
-          Write-Output "Latest Commit ID: $COMMIT_ID"
-          $COMMIT_MESSAGE = git log -1 --format="%s"
-          Write-Output "Latest Commit Message: $COMMIT_MESSAGE"
-          $COMMIT_AUTHOR = git log -1 --format="%an"
-          Write-Output "Latest Commit Author: $COMMIT_AUTHOR"
+      - name: Download package
+      - run: |
+          echo approved
