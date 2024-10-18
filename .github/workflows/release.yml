@@ -4,17 +4,24 @@ on:
   workflow_dispatch:
 
 jobs:
+  approve:
+    runs-on: ubuntu-latest
+    environment:
+      name: cdddd
+    steps:
+    - run: |
+        echo approved
+    
   build:
+    needs: approve
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo  waiting
+        echo  build
     
   release:
     needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: cdddd
     steps:
       - name: Download package
         run: echo approved
