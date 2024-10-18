@@ -1,16 +1,22 @@
-name: PR Merged Trigger
+name: Publish a release
 
 on:
-  pull_request:
-    types:
-      - closed
-    branches:
-      - 'main'
+  # release:
+  #   types: [created]
+  workflow_dispatch:
 
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true
+  build:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo The PR was merged
+        echo  waiting
+    
+release:
+  needs: build
+  environment:
+    name: cdddd
+  steps:
+    - name: Download package
+    - run: |
+        echo approved
