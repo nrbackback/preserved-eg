@@ -12,12 +12,4 @@ jobs:
     - run: |
         echo  waiting
     
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: cdddd
-    steps:
-      - name: Download package
-      - run: |
-          echo approved
+
