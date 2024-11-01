@@ -32,7 +32,7 @@ jobs:
      uses: actions/checkout@v4
 
    - name: Autobuild
-     uses: github/codeql-action/autobuild@v2
+     run: go build
 
    - name: Initialize CodeQL
      uses: github/codeql-action/init@v2
