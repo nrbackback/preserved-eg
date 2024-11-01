@@ -16,6 +16,7 @@ func main() {
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
+   var a int
    username := r.URL.Query().Get("username")
 
    // 这里存在 SQL 注入漏洞
