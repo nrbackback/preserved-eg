@@ -38,7 +38,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
        var id int
        var name string
        err := rows.Scan(&id, &name)
-        err != nil {
+       if err != nil {
            http.Error(w, err.Error(), http.StatusInternalServerError)
            return
        }
