@@ -1,28 +1,46 @@
 package main
 
 import (
-    "fmt"
-    "net/http"
+   "database/sql"
+   "fmt"
+   "log"
+   "net/http"
+
+   // 使用标准库的 sqlite3 驱动
+   _ "modernc.org/sqlite"
 )
 
-func hello(w http.ResponseWriter, req *http.Request) {
-
-    fmt.Fprintf(w, "1111hello\n")
-}
-
-func headers(w http.ResponseWriter, req *http.Request) {
-
-    for name, headers := range req.Header {
-        for _, h := range headers {
-            fmt.Fprintf(w, "%v: %v\n", name, h)
-        }
-    }
-}
-
 func main() {
-    // ...vvvc
-    http.HandleFunc("/hello", hello)
-    http.HandleFunc("/headers", headers)
-    fmt.Println("........ready to serve.......fff..11222......")
-    http.ListenAndServe(":8090", nil)
+   http.HandleFunc("/user", getUser)
+   log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func getUser(w http.ResponseWriter, r *http.Request) {
+   username := r.URL.Query().Get("username")
+
+   // 这里存在 SQL 注入漏洞
+   query := fmt.Sprintf("SELECT * FROM users WHERE username = '%s'", username)
+
+   db, err := sql.Open("sqlite", "example.db")
+   if err != nil {
+       log.Fatal(err)
+   }
+   defer db.Close()
+
+   rows, err := db.Query(query)
+   if err != nil {
+       http.Error(w, err.Error(), http.StatusInternalServerError)
+       return
+   }
+   defer rows.Close()
+
+   for rows.Next() {
+       var id int
+       var name string
+       if err := rows.Scan(&id, &name); err != nil {
+           http.Error(w, err.Error(), http.StatusInternalServerError)
+           return
+       }
+       fmt.Fprintf(w, "ID: %d, Username: %s\n", id, name)
+   }
 }
