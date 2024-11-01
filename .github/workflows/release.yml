@@ -37,7 +37,7 @@ jobs:
      uses: github/codeql-action/init@v2
      with:
        languages: ${{ matrix.language }}
-       build-mode: mannual
+       build-mode: manual
 
    - name: Autobuild
      run: |
